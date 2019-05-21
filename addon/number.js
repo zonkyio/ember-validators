@@ -1,3 +1,4 @@
+import { Decimal } from "decimal.js-light";
 import { isEmpty, isNone } from '@ember/utils';
 import { getProperties, get } from '@ember/object';
 import validationError from 'ember-validators/utils/validation-error';
@@ -88,8 +89,12 @@ function _validateType(type, options, value) {
     return validationError('odd', value, options);
   } else if (type === 'even' && actual % 2 !== 0) {
     return validationError('even', value, options);
-  } else if (type === 'multipleOf' && !isInteger(actual / expected)) {
-    return validationError('multipleOf', value, options);
+  } else if (type === 'multipleOf') {
+    actual = new Decimal(actual);
+    expected = new Decimal(expected);
+    if (!isInteger(actual.dividedBy(expected).toNumber())) {
+      return validationError('multipleOf', value, options);
+    }
   }
 
   return true;
