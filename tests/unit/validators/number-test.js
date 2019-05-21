@@ -131,20 +131,56 @@ test('gt', function(assert) {
 });
 
 test('multipleOf', function(assert) {
-  assert.expect(3);
+  assert.expect(11);
 
   options = {
     multipleOf: 2
   };
 
   result = validate(5, cloneOptions(options));
-  assert.equal(processResult(result), 'This field must be a multiple of 2');
+  assert.equal(processResult(result), 'This field must be a multiple of 2', '5');
 
   result = validate(17, cloneOptions(options));
-  assert.equal(processResult(result), 'This field must be a multiple of 2');
+  assert.equal(processResult(result), 'This field must be a multiple of 2', '17');
 
   result = validate(22, cloneOptions(options));
-  assert.equal(processResult(result), true);
+  assert.equal(processResult(result), true, '22');
+
+  options = {
+    multipleOf: -2
+  };
+
+  result = validate(5, cloneOptions(options));
+  assert.equal(processResult(result), 'This field must be a multiple of -2', '5 with minus');
+
+  result = validate(17, cloneOptions(options));
+  assert.equal(processResult(result), 'This field must be a multiple of -2', '17 with minus');
+
+  result = validate(22, cloneOptions(options));
+  assert.equal(processResult(result), true, '22 with minus');
+
+  options = {
+    multipleOf: 0.01
+  };
+
+  result = validate(0.001, cloneOptions(options));
+  assert.equal(processResult(result), 'This field must be a multiple of 0.01', '0.001');
+
+  result = validate(11111.111, cloneOptions(options));
+  assert.equal(processResult(result), 'This field must be a multiple of 0.01', '0.001');
+
+  result = validate(11, cloneOptions(options));
+  assert.equal(processResult(result), true, '11');
+
+  result = validate(11111.11, cloneOptions(options));
+  assert.equal(processResult(result), true, '11111.11');
+
+  options = {
+    multipleOf: 0.1
+  };
+
+  result = validate(123.1, cloneOptions(options));
+  assert.equal(processResult(result), true, '123.1');
 });
 
 test('gte', function(assert) {
